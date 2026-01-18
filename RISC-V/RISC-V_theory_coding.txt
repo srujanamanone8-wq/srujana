@@ -1,0 +1,393 @@
+Before RISC-V and Microblaze ,need to talk about ISA
+ISA-Instruction Set Architecture
+-->it specifies what instructions a processor can execute
+-->how instructions are encoded
+-->registeres available
+-->memory model
+-->data types
+-->privilege models Privilege modes define levels of access the CPU has when executing code.
+-->calling conventions A calling convention defines how functions call each other at machine level
+• How parameters are passed
+	• Registers
+	• Stack
+• Who manages the stack frame
+	• Caller or callee
+• Which registers must be saved
+	• Caller-saved (volatile)
+	• Callee-saved (non-volatile)
+• Where return values are placed
+	• Usually a specific register (e.g., R0, EAX, x0)
+
+Basically acts as interface between software and hardware
+Software compileres generate machine code that conforms to the ISA
+Hardware CPU are built to  understand and execute that ISA
+
+
+
+RISC-V
+
+RISC-V CPU-IS A PROCESSOR, responsible for interpreting(interupt) and executing most of the instructions from the computer's hardware.
+
+  Key Components- ALU(performs arithmetic & logic oprations)
+                  CU(control unit-directs the operation of a processor by decoding the instructions)
+                  Registers-((small,fast storage locations within the cpu to hold date,instructions,adrsses temporarily)
+
+what does a processor do
+fetch(instruction from computers memory)
+decode(interprets the instruction to determine the required action)
+Execute(Performs alu and data movement)
+store(writing back the executed instruction to memeory or a register)
+
+Instruction set
+consists of set of instructions that a cpu can execute ,instruction set defines the instructions that are available to a programmer and is specific to a particular CPU architecture.
+ISA Instructions include- alu,control flows(Jmp,branches) and data movement(load,stre)
+Types of Instructions
+
+Data movement :move data between registers,memory and I/o ports(MOV;PUSH;POP)
+AL instructions:change the sequence of instructions(JMP;CALL;RET;LOOP)
+String Operations:handle operations on strings(MOVSB;CMPSB)
+System INstructions: perform specific tasks related to systems(INT;HLT)
+
+Assembler is used to translate assembly language to binary code.
+
+Key Features of RISC-V
+Open standard-Licensing free
+Modular Design-RISC-V has a modular ISA, with a small base set of           instructions and multiple standard extensions that add functionality
+Simplicity: the base ISA is designed  to be simple and efficient,facilitating ease of implementation and verification
+sclability: risc- can be scaled to meet the needs of various applicaions from micro controllers to high-performance computing. 
+
+there are some extensions to base ISA
+M-multiplication,f-single precision Floating point,D-Double -precision loating poit,q-quad precision floating point 
+
+Register Set:
+Integer Registers: 32 general-purpose  registers(xo-hardwired to zero  to x31) 
+Floaing point Registers: 32 floating point registers (fo to f31)for th  and D extensions. 
+
+Instrution Formats:
+R-Type:- register-register operations
+I-type :-immediate Operations
+S-type :- store operation
+B-type :- branch operations
+U-type :- upper immediate operations
+J-type :- Jump Opertions  
+
+
+intro to RV32I
+
+RV32I is a base integer subset of risc-v ISA
+includes 32 bit instruction set of eac one 32 bits
+where Xo(32 bits)-hardwired to gnd.
+      X1-used to hold the return address on a call
+
+importance of registers in risc-v architecture
+registers provides the fasteset  access odata compared to other memory types
+operations performed using registers are significantly faster improving overall performance
+Efficient use of registers can lead to reduced power consumption, which is crucial for battery-operated and energy sensitive devices
+
+there are fixed number  of registers which will be helpful for encodingand decoding processor, their consistency helps in more efficient hardware
+they help the risc to be flexible like it store and manipulate temporary data during program execution
+used extensivey in arithemetic operations,function calls and control flow management
+ 
+Role of each Register
+x0- useful for initializing values and as a place holder for in instructions that require a register operand
+x1- used to store the return address for function calls
+    helps in managing function call stack and returns
+x2- points to the top of the stack
+x3- points to the global data section(varaibles and constants)
+x4- used in multi threaded programs to point to thread specific data
+x5 to x7 - used for temporary data st during computations
+not preserved across functional calls
+x8 - saved register ,preserved across function calls
+x9 - used for preserving data across function calls
+x10 to x11 - used for passing arguments to functions and used for returning values from functions
+x12 to x17 - additional registers for passing arguments to functions
+x18 to x27 - used for preserving data across function calls
+x28 to x31 - used for temporary data storage during computations
+
+identify adapt cover letter convincingle
+
+R-type  - instructions in the RISC-V    are used for arithemetic            and logical operations between registers.
+
+the general form of r-type registers are 
+func7 rs2(5 bits) rs1(5 bits) func3 rd(5 bits) opcode
+
+Description of different type of func3 and func 7 and opcode of r type instructions
+
+instruction   func7   func3   opcode   Description
+
+add         0000000   000      0110011   add:rd= rs1+rs2;
+sub         0100000   000                sub:rd = rs1+rs2;
+sli         0000000   001                rd= rs1<<rs2;
+slt         0000000   010                rd= rs1<rs2;(set less than)
+sltu        0000000   011                rd=(rs1<rs2);
+xor         0000000   100                rd=rs1^rs2
+srl         0000000   101                rd=rs1>>rs2(shift right logical)
+sra         0100000   101                rd=rs1>>rs2(shift right arithemet)
+or          0000000   110                rd=rs1|rs2
+and         0000000   111                rd=rs1&rs2
+
+
+I-type(have a confusion between opcode (beverages)and functions(juices,tea,coffee))
+In the RISC-V architecture,I-type instructions are used for operations involving an immediate value. These instructions typically perform alu operations where one operand is constant value embedded in intro itself
+
+I-type Instruction
+ADDI X5,X1,10;I
+IMMEDIATE REG(12 BITS) RS1 FUNC3(ADDI) RD OPCODE
+
+ADDI -->adds an immediate value to a register
+slti
+load word -->loads a 32-bit word from memory into a register
+              lw rd,imm(rs1)
+              rd = M[rs1+imm]
+LW x5,o(x1)this instruction loads the 32-bit word from the memory address x1+o into register x5.
+slli(immediate)  x10,x5,3(shifts the contents of register to left x5 by 3 positions and stores the result in register x10).
+
+LOAD word:LW x10,4(x5)
+this loads a word from the memory address obtained by adding the offset 4 to the contents of registers x5 and stores it in register x10.
+in the same way LB(byte),LH(load half word),unsigned-LBU,LHU
+
+
+B-Type Instructions
+b-type instructions in RISC-v are used for conditional branching.they compare two registers and branch to a specified instruction if the comparision is true.b-type instrutions are a specific instruction format that includes fields for the opcode,source registers,the branch target offset and the comparison function 
+we have beq,bneq,blt,bge,bltu,bgeu
+LUI(load upper immediate)
+The LUI instruction loads a 20-bit immediate value into the upper 20 bits of a register,setting the lower 12 bits to zero.this instruction is often used to create large constants or prepare a base address for further operations
+
+
+Register file-->alu-->immediate register-->control unit-->cpu core-->mem-->peripherals-->irc-->bus interconnect (axi)-->top module
+
+
+Register filee
+
+
+module register_file ( input wire clk, input wire reg_we, input wire [4:0] rs1_addr, input wire [4:0] rs2_addr, input wire [4:0] rd_addr, input wire [31:0] rd_data, output wire [31:0] rs1_data, output wire [31:0] rs2_data ); reg [31:0] regs [0:31];
+ // Read (combinational) 
+assign rs1_data = (rs1_addr == 0) ? 32'b0 : regs[rs1_addr]; 
+assign rs2_data = (rs2_addr == 0) ? 32'b0 : regs[rs2_addr]; 
+
+// Write (sequential) 
+always @(posedge clk) begin 
+if (reg_we && rd_addr != 0) 
+regs[rd_addr] <= rd_data; 
+end 
+endmodule
+Absolutely! Let’s summarize **all your questions and answers** in a **concise, note-friendly format** for quick reference. I’ll keep it short but complete.
+
+---
+
+# **RISC-V Register File Notes**
+
+### 1️⃣ Why do we need sequential (`always @(posedge clk)`) in register file?
+
+* Registers must **store values across clock cycles**.
+* Writes happen **synchronously on clock edge** to avoid glitches and maintain pipeline timing.
+* Reads can remain combinational; storage is already sequential.
+
+---
+
+### 2️⃣ How do we know when to use combinational vs sequential?
+
+* **Sequential (`always @(posedge clk)`)** → if value must **remember state across cycles** (registers, PC, counters).
+* **Combinational (`assign` or `always @(*)`)** → if value is **computed from inputs at the moment** (ALU operations, multiplexers).
+* Shortcut: “Do I need to remember this beyond this instant?” → Yes → sequential; No → combinational.
+
+---
+
+### 3️⃣ Why are `rs1_data` and `rs2_data` combinational even though we need them in ALU?
+
+* The **memory is in `regs`**, which is sequential.
+* The read just **forwards the stored value** immediately to ALU.
+* Combinational read allows **single-cycle access** and faster operation.
+* In pipelined CPUs, **pipeline registers** hold these values later if needed.
+
+---
+
+### 4️⃣ Why use `<=` instead of `=` for writes?
+
+* `<=` = **non-blocking**, used in sequential `always @(posedge clk)` blocks.
+* Ensures **all registers update simultaneously** at clock edge.
+* `=` = blocking, executes statements in order → can cause **race conditions** in sequential logic.
+* Example: swapping registers fails with `=` but works with `<=`.
+
+---
+
+### 5️⃣ Why declare `regs[31:0] regs[0:31];`?
+
+* This is the **storage for all 32 registers**.
+* Each element stores a 32-bit value (x0–x31).
+* Needed because the CPU must **store register values somewhere**.
+
+---
+
+### 6️⃣ Why must `regs` be declared as `reg`?
+
+* Only `reg` can appear on the **LHS of an `always` block assignment**.
+* We write to `regs` sequentially (`regs[rd_addr] <= rd_data`).
+* `wire` cannot store values; it can only be driven combinationally.
+* Reading `regs` combinationally does **not require `reg`**, but writing does.
+
+---
+
+### 7️⃣ Why sometimes `reg` is used even for combinational variables?
+
+* `reg` = variable assignable inside an `always` block.
+* Combinational `always @(*)` blocks still need `reg` for **outputs assigned inside the block**.
+* The type (`reg` vs `wire`) does **not automatically mean sequential**; it depends on the block.
+
+---
+
+### 8️⃣ Flow of register file → ALU → register file
+
+```
+        +----------------+
+        | Register File  |
+        | rs1_data ----> | a
+        | rs2_data ----> | b
+        +----------------+
+                 |
+                 v
+             +-------+
+             |  ALU  |
+             +-------+
+                 |
+                 v
+          rd_data (writeback)
+                 |
+                 v
+        +----------------+
+        | Register File  |
+        +----------------+
+```
+
+* rs1/rs2 read combinationally, ALU computes, rd writes sequentially.
+
+---
+
+If you want, I can **also make a one-page visual diagram of the register file + ALU datapath** for quick revision—it’s perfect for notes.
+
+Do you want me to do that?
+Absolutely! Let’s summarize **all your questions and answers** in a **concise, note-friendly format** for quick reference. I’ll keep it short but complete.
+
+---
+
+# **RISC-V Register File Notes**
+
+### 1️⃣ Why do we need sequential (`always @(posedge clk)`) in register file?
+
+* Registers must **store values across clock cycles**.
+* Writes happen **synchronously on clock edge** to avoid glitches and maintain pipeline timing.
+* Reads can remain combinational; storage is already sequential.
+
+---
+
+### 2️⃣ How do we know when to use combinational vs sequential?
+
+* **Sequential (`always @(posedge clk)`)** → if value must **remember state across cycles** (registers, PC, counters).
+* **Combinational (`assign` or `always @(*)`)** → if value is **computed from inputs at the moment** (ALU operations, multiplexers).
+* Shortcut: “Do I need to remember this beyond this instant?” → Yes → sequential; No → combinational.
+
+---
+
+### 3️⃣ Why are `rs1_data` and `rs2_data` combinational even though we need them in ALU?
+
+* The **memory is in `regs`**, which is sequential.
+* The read just **forwards the stored value** immediately to ALU.
+* Combinational read allows **single-cycle access** and faster operation.
+* In pipelined CPUs, **pipeline registers** hold these values later if needed.
+
+---
+
+### 4️⃣ Why use `<=` instead of `=` for writes?
+
+* `<=` = **non-blocking**, used in sequential `always @(posedge clk)` blocks.
+* Ensures **all registers update simultaneously** at clock edge.
+* `=` = blocking, executes statements in order → can cause **race conditions** in sequential logic.
+* Example: swapping registers fails with `=` but works with `<=`.
+
+---
+
+### 5️⃣ Why declare `regs[31:0] regs[0:31];`?
+
+* This is the **storage for all 32 registers**.
+* Each element stores a 32-bit value (x0–x31).
+* Needed because the CPU must **store register values somewhere**.
+
+---
+
+### 6️⃣ Why must `regs` be declared as `reg`?
+
+* Only `reg` can appear on the **LHS of an `always` block assignment**.
+* We write to `regs` sequentially (`regs[rd_addr] <= rd_data`).
+* `wire` cannot store values; it can only be driven combinationally.
+* Reading `regs` combinationally does **not require `reg`**, but writing does.
+
+---
+
+### 7️⃣ Why sometimes `reg` is used even for combinational variables?
+
+* `reg` = variable assignable inside an `always` block.
+* Combinational `always @(*)` blocks still need `reg` for **outputs assigned inside the block**.
+* The type (`reg` vs `wire`) does **not automatically mean sequential**; it depends on the block.
+
+---
+
+### 8️⃣ Flow of register file → ALU → register file
+
+```
+        +----------------+
+        | Register File  |
+        | rs1_data ----> | a
+        | rs2_data ----> | b
+        +----------------+
+                 |
+                 v
+             +-------+
+             |  ALU  |
+             +-------+
+                 |
+                 v
+          rd_data (writeback)
+                 |
+                 v
+        +----------------+
+        | Register File  |
+        +----------------+
+```
+
+* rs1/rs2 read combinationally, ALU computes, rd writes sequentially.
+
+---
+
+ALU
+
+zero is a 1-bit flag from the ALU indicating the result is 0, and it alone does not trigger a branch. A branch occurs only when both the instruction’s branch signal and zero are 1.
+
+module alu (
+    input  wire [31:0] op_a,
+    input  wire [31:0] op_b,
+    input  wire [3:0]  alu_ctrl,
+    output reg  [31:0] result,
+    output wire        zero
+);
+
+    always @(*) begin
+        case (alu_ctrl)
+            4'b0000: result = op_a + op_b;                // ADD
+            4'b0001: result = op_a - op_b;                // SUB
+            4'b0010: result = op_a & op_b;                // AND
+            4'b0011: result = op_a | op_b;                // OR
+            4'b0100: result = op_a ^ op_b;                // XOR
+            4'b0101: result = ($signed(op_a) < $signed(op_b)); // SLT
+            4'b0110: result = (op_a < op_b);              // SLTU
+            4'b0111: result = op_a << op_b[4:0];          // SLL
+            4'b1000: result = op_a >> op_b[4:0];          // SRL
+            4'b1001: result = $signed(op_a) >>> op_b[4:0];// SRA
+            default: result = 32'b0;
+        endcase
+    end
+
+    assign zero = (result == 0);
+
+endmodule    
+
+
